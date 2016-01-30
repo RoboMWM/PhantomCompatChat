@@ -30,25 +30,37 @@ public class Main extends JavaPlugin
                 return false;
             Player target = Bukkit.getPlayerExact(args[0]); //replicating vanilla /tell
 
-            //If target doesn't exist...
-            if (target == null)
-            {
-                this.getLogger().log(Level.INFO, "[" + sender.getName() + ": That player cannot be found]");
-                return true; //Spigot has a bug in which they do not return vanilla error messages like "That player could not be found"
-            }
-
             boolean isConsole = true;
+            Player player = null;
 
             if (sender instanceof Player)
             {
-                //check if player is trying to send a message to themselves
-                Player player = (Player)sender;
-                if (player == target)
-                {
-                    this.getLogger().log(Level.INFO, "[" + sender.getName() + ": You can't send a private message to yourself!]");
-                    return true;
-                }
+                player = (Player)sender;
                 isConsole = false;
+            }
+
+            //check if player is trying to send a message to themselves
+            if (player == target)
+            {
+                cannotSendToSelf(sender, isConsole);
+                return true;
+            }
+
+            //check if target exists...
+            if (target == null)
+            {
+                cannotFind(sender, isConsole);
+                return true;
+            }
+
+            //check if sender has permission to see the target player
+            if (!isConsole)
+            {
+                if (!player.canSee(target))
+                {
+                    //if not, send "cannot find" message
+                    cannotFind(player, false);
+                }
             }
 
             //Prepare message to be sent
@@ -66,5 +78,19 @@ public class Main extends JavaPlugin
             return true;
         }
         return true; //Should not be reached
+    }
+
+    public void cannotSendToSelf(CommandSender sender, Boolean isConsole)
+    {
+        this.getLogger().log(Level.INFO, "[" + sender.getName() + ": You can't send a private message to yourself!]");
+        if (!isConsole)
+            sender.sendMessage(ChatColor.RED + "You can't send a private message to yourself!");
+    }
+
+    public void cannotFind(CommandSender sender, Boolean isConsole)
+    {
+        this.getLogger().log(Level.INFO, "[" + sender.getName() + ": That player cannot be found]");
+        if (!isConsole)
+            sender.sendMessage(ChatColor.RED + "That player cannot be found");
     }
 }
