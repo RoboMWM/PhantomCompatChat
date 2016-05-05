@@ -15,12 +15,6 @@ import java.util.logging.Level;
 public class Main extends JavaPlugin
 {
     @Override
-    public void onEnable()
-    {
-        //no listeners to register :)
-    }
-
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
         if (cmd.getName().equalsIgnoreCase("tell"))
