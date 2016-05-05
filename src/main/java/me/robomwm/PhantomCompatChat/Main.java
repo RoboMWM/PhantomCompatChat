@@ -60,13 +60,16 @@ public class Main extends JavaPlugin
                 {
                     //if not, send "cannot find" message
                     cannotFind(player, false);
+                    return true;
                 }
             }
 
             //Prepare message to be sent
-            String pm = ":";
+            StringBuilder sb = new StringBuilder(":");
             for (int i = 1; i < args.length; i++)
-                pm += (" " + args[i]);
+                sb.append(" " + args[i]);
+
+            String pm = sb.toString();
 
             //Send message to target
             if (isConsole) //Bukkit uses "CONSOLE" instead of "Server" as the console's name :/
